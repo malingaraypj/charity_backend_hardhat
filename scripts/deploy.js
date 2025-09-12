@@ -3,33 +3,24 @@ const hre = require("hardhat");
 async function main() {
   console.log("🚀 Starting deployment...");
   
+  const [deployer] = await hre.ethers.getSigners();
+
+  console.log("Deploying contracts with the account:", deployer.address);
+  
   // Get the contract factory
-  const SimpleStorage = await hre.ethers.getContractFactory("SimpleStorage");
+  const CharityDonation = await hre.ethers.getContractFactory("CharityDonation");
   
   // Deploy the contract
-  console.log("📦 Deploying SimpleStorage contract...");
-  const simpleStorage = await SimpleStorage.deploy();
+  console.log("📦 Deploying CharityDonation contract...");
+  const charityDonation = await CharityDonation.deploy(deployer.address);
   
-  await simpleStorage.waitForDeployment();
+  await charityDonation.waitForDeployment();
   
-  const contractAddress = await simpleStorage.getAddress();
+  const contractAddress = await charityDonation.getAddress();
   
-  console.log("✅ SimpleStorage deployed to:", contractAddress);
+  console.log("✅ CharityDonation deployed to:", contractAddress);
   console.log("🔗 Network:", hre.network.name);
-  console.log("⛽ Gas used for deployment:", (await simpleStorage.deploymentTransaction().wait()).gasUsed.toString());
-  
-  // Verify the deployment by calling a function
-  console.log("🔍 Verifying deployment...");
-  const initialValue = await simpleStorage.get();
-  console.log("📊 Initial stored value:", initialValue.toString());
-  
-  // Set a test value
-  console.log("🧪 Setting test value...");
-  const tx = await simpleStorage.set(42);
-  await tx.wait();
-  
-  const newValue = await simpleStorage.get();
-  console.log("📊 New stored value:", newValue.toString());
+  console.log("⛽ Gas used for deployment:", (await charityDonation.deploymentTransaction().wait()).gasUsed.toString());
   
   console.log("🎉 Deployment completed successfully!");
 }
